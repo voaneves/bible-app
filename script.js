@@ -1,50 +1,53 @@
-// script.js
+// Load the JSON file
+fetch("bible/structure.json")
+  .then((response) => response.json())
+  .then((data) => {
+    // Get the book buttons container
+    const bookButtonsContainer = document.getElementById("book-buttons");
 
-// Função para exibir um versículo aleatório na página inicial
-function showRandomVerse() {
-    // Lógica para obter um versículo aleatório do arquivo JSON
-    const randomVerse = /* Obtenha um versículo aleatório */;
-    document.getElementById('verse').innerHTML = randomVerse;
-}
+    // Function to create book buttons with book names
+    function createBookButtons() {
+      // Clear the current book buttons
+      bookButtonsContainer.innerHTML = "";
 
-// Função para exibir os capítulos de um livro
-function showBook(book) {
-    // Lógica para obter os capítulos do livro selecionado do arquivo JSON
-    const chapters = /* Obtenha os capítulos do livro */;
-    const chapterList = document.getElementById('chapter-list');
-    chapterList.innerHTML = ''; // Limpa a lista de capítulos
+      // Loop through the books data and create buttons with book names
+      data.bible.forEach((book) => {
+        const button = document.createElement("button");
+        button.textContent = book.abbrev;
+        button.addEventListener("click", () => {
+          createNumberedButtons(book);
+        });
+        bookButtonsContainer.appendChild(button);
+      });
+    }
 
-    chapters.forEach(function(chapter) {
-        const listItem = document.createElement('li');
-        const link = document.createElement('a');
-        link.href = '#';
-        link.onclick = function() {
-            showChapter(book, chapter);
-        };
-        link.textContent = chapter;
-        listItem.appendChild(link);
-        chapterList.appendChild(listItem);
-    });
+    // Function to create numbered buttons for a specific book
+    function createNumberedButtons(book) {
+      // Clear the current book buttons
+      bookButtonsContainer.innerHTML = "";
 
-    document.getElementById('book-title').textContent = book;
-    document.getElementById('book-chapters').style.display = 'block';
-    document.getElementById('chapter-content').style.display = 'none';
-}
+      // Create the back button
+      const backButton = document.createElement("button");
+      backButton.textContent = "🡄";
+      backButton.addEventListener("click", () => {
+        createBookButtons();
+      });
+      bookButtonsContainer.appendChild(backButton);
 
-// Função para exibir o conteúdo de um capítulo
-function showChapter(book, chapter) {
-    // Lógica para obter o conteúdo do capítulo selecionado do arquivo JSON
-    const chapterContent = /* Obtenha o conteúdo do capítulo */;
-    const verses = document.getElementById('verses');
-    verses.innerHTML = ''; // Limpa o conteúdo dos versículos
+      // Loop through the chapters of the book and create numbered buttons
+      for (let i = 1; i <= book.chapters; i++) {
+        const button = document.createElement("button");
+        button.textContent = i;
+        button.addEventListener("click", () => {
+          showChapter(book.abbrev, i);
+        });
+        bookButtonsContainer.appendChild(button);
+      }
+    }
 
-    chapterContent.forEach(function(verse) {
-        const p = document.createElement('p');
-        p.textContent = verse;
-        verses.appendChild(p);
-    });
-
-    document.getElementById('chapter-title').textContent = book + ' ' + chapter;
-    document.getElementById('book-chapters').style.display = 'none';
-    document.getElementById('chapter-content').style.display = 'block';
-}
+    // Create the initial book buttons
+    createBookButtons();
+  })
+  .catch((error) => {
+    console.log("Error loading the JSON file:", error);
+  });
