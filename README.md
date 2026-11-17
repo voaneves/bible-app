@@ -6,7 +6,7 @@ Protótipo de leitor da Bíblia feito com HTML, CSS e JavaScript puros, sem fram
 
 - Carrega `bible/structure.json` e gera, dinamicamente, um botão por livro.
 - Ao clicar num livro, mostra botões numerados com os capítulos, com botão de voltar à lista de livros.
-- A exibição do texto dos versículos ainda não está implementada: o clique no capítulo chama `showChapter`, que ainda não existe no código (trabalho em andamento).
+- Ao clicar num capítulo, `showChapter` carrega o JSON do livro e exibe os versículos do capítulo abaixo dos botões.
 
 ## Como rodar
 
@@ -24,7 +24,7 @@ Acesse http://localhost:8000.
 
 ```
 index.html      página
-script.js       botões de livros e capítulos
+script.js       botões de livros e capítulos, e exibição dos versículos
 styles.css      estilos
 bible/          structure.json (livros e nº de capítulos) e um JSON por livro (ex.: Gen.json)
 LICENSE
