@@ -7,6 +7,7 @@
   "tagline": "Leitor da Bíblia no navegador: escolha o livro e o capítulo e leia os versículos.",
   "description": "Leitor da Bíblia em HTML, CSS e JavaScript puros, com livros e capítulos carregados de arquivos JSON locais.",
   "logo": {
+    "glyph": "book",
     "mark": "Bi"
   },
   "buttons": [

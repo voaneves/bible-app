@@ -5,7 +5,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/logo/logo-dark.svg" />
   <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/logo/logo-light.svg" />
-  <img alt="Logo do Site da Bíblia: disco dividido em tinta e papel com o monograma Bi e um ponto vermelho" src="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/logo/logo-light.svg" width="112" height="112" />
+  <img alt="Logo do Site da Bíblia: um livro aberto, com um ponto vermelho para a fita marcadora" src="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/logo/logo-light.svg" width="112" height="112" />
 </picture>
 
 <h1>Site da Bíblia</h1>
