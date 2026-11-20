@@ -1,0 +1,51 @@
+{
+  "repo": "bible-app",
+  "branch": "main",
+  "lang": "pt-BR",
+  "license": "MIT",
+  "name": "Site da Bíblia",
+  "tagline": "Leitor da Bíblia no navegador: escolha o livro e o capítulo e leia os versículos.",
+  "description": "Leitor da Bíblia em HTML, CSS e JavaScript puros, com livros e capítulos carregados de arquivos JSON locais.",
+  "logo": {
+    "mark": "Bi"
+  },
+  "buttons": [
+    {
+      "id": "live",
+      "text": "Abrir o leitor",
+      "kind": "primary",
+      "font": "sans",
+      "href": "https://voaneves.github.io/bible-app/"
+    },
+    {
+      "id": "how",
+      "text": "Como rodar",
+      "kind": "secondary",
+      "font": "sans",
+      "href": "https://github.com/voaneves/bible-app#como-rodar"
+    },
+    {
+      "id": "hire",
+      "text": "Vamos conversar",
+      "kind": "primary",
+      "font": "sans",
+      "href": "https://voaneves.com/#contato",
+      "landing": false
+    },
+    {
+      "id": "site",
+      "text": "voaneves.com",
+      "kind": "secondary",
+      "font": "sans",
+      "href": "https://voaneves.com/",
+      "landing": false
+    }
+  ],
+  "features": [
+    "Um botão por livro, com capítulos numerados ao clicar.",
+    "Versículos do capítulo exibidos abaixo dos botões.",
+    "Sem frameworks nem etapa de build; dados em JSON locais."
+  ],
+  "landing": false,
+  "live_url": "https://voaneves.github.io/bible-app/"
+}
