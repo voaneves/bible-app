@@ -11,24 +11,29 @@
 <h1>Site da Bíblia</h1>
 
 <p>
-  <strong>Leitor da Bíblia no navegador: escolha o livro e o capítulo e leia os versículos.</strong><br />
-  <sub>HTML, CSS e JavaScript puros, sem framework nem build</sub>
+  <strong>Leitor da Bíblia no navegador com carregamento sob demanda por livro e capítulo — zero frameworks ou etapa de build.</strong><br />
+  <sub>
+    66 livros, 1.189 capítulos e 31.123 versículos indexados em JSON —
+    <kbd>HTML5</kbd> · <kbd>CSS3</kbd> · <kbd>JavaScript</kbd> · <kbd>Fetch API</kbd>
+  </sub>
 </p>
 
 <p>
   <a href="https://voaneves.github.io/bible-app/"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/buttons/live-dark.svg" /><img alt="Abrir o leitor" src="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/buttons/live-light.svg" height="40" /></picture></a>
-  <a href="https://github.com/voaneves/bible-app#como-rodar"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/buttons/how-dark.svg" /><img alt="Como rodar" src="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/buttons/how-light.svg" height="40" /></picture></a>
+  <a href="#como-rodar"><picture><source media="(prefers-color-scheme: dark)" srcset="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/buttons/how-dark.svg" /><img alt="Como rodar" src="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/buttons/how-light.svg" height="40" /></picture></a>
 </p>
 
 <p><sub>Precisa de algo assim? <a href="https://voaneves.com/#contato"><strong>Vamos conversar →</strong></a></sub></p>
 
 <p>
   <a href="https://github.com/voaneves/bible-app/blob/main/LICENSE"><img src="https://img.shields.io/github/license/voaneves/bible-app?style=flat-square&color=0A0A0A" alt="Licença MIT" /></a>
-  <img src="https://img.shields.io/badge/HTML%20%C2%B7%20CSS%20%C2%B7%20JS-sem%20depend%C3%AAncias-b80000?style=flat-square" alt="HTML, CSS e JavaScript sem dependências" />
+  <img src="https://img.shields.io/badge/HTML_%C2%B7_CSS_%C2%B7_JS-sem_depend%C3%AAncias-b80000?style=flat-square" alt="HTML, CSS e JavaScript sem dependências" />
+  <img src="https://img.shields.io/badge/dados-66_livros_JSON-5C5446?style=flat-square" alt="66 livros em JSON" />
 </p>
 
 <p>
   <a href="#o-que-faz-hoje">O que faz</a> ·
+  <a href="#arquitetura">Arquitetura</a> ·
   <a href="#como-rodar">Como rodar</a> ·
   <a href="#estrutura">Estrutura</a> ·
   <a href="#contato">Contato</a>
@@ -42,44 +47,76 @@
   <img alt="" src="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/brand/rule-light.svg" width="100%" />
 </picture>
 
+<a id="o-que-faz-hoje"></a>
 ## O que faz hoje
 
-Escolha um livro da Bíblia, depois um capítulo, e leia os versículos na própria página.
+Escolha um livro da Bíblia, selecione o capítulo desejado e leia os versículos formatados diretamente no navegador sem recarregar a página.
 
-Este é um protótipo feito com HTML, CSS e JavaScript puros, sem frameworks nem build. Os livros e capítulos vêm de arquivos JSON locais. Demonstração: <https://voaneves.github.io/bible-app/>
+Demonstração ao vivo: <https://voaneves.github.io/bible-app/>
 
-- Carrega `bible/structure.json` e gera, dinamicamente, um botão por livro.
-- Ao clicar num livro, mostra botões numerados com os capítulos, com botão de voltar à lista de livros.
-- Ao clicar num capítulo, `showChapter` carrega o JSON do livro e exibe os versículos do capítulo abaixo dos botões.
+### 66 livros em arquivos individuais
 
+Em vez de carregar os `31.123` versículos de uma só vez na memória, cada livro (`Gen.json` a `Rev.json`) fica isolado sob `bible/`, somando **66** livros e **1.189** capítulos catalogados em [`bible/structure.json`](./bible/structure.json)[^1].
+
+### Navegação dinâmica e `fetch()` sob demanda
+
+Na abertura, [`script.js`](./script.js) lê apenas `bible/structure.json` e gera os botões dos livros (`createBookButtons()`). Somente ao escolher um capítulo a função `showChapter(abbrev, chapterNumber)` busca `bible/${abbrev}.json`, enquanto `createNumberedButtons()` gera a grade `1..N` com botão de retorno.
+
+> [!NOTE]
+> A interface em [`index.html`](./index.html) e as mensagens de erro em [`script.js`](./script.js) estão em **português**, enquanto os versículos armazenados nos arquivos JSON em `./bible/` estão em **inglês**.
+
+<a id="arquitetura"></a>
+## Arquitetura de carregamento
+
+```mermaid
+flowchart LR
+  IDX["index.html + script.js"] -->|"1. fetch()"| STR["bible/structure.json (66 livros)"]
+  STR --> BK["createBookButtons() (#book-buttons)"]
+  BK -->|"Clique no livro"| CH["createNumberedButtons(book)"]
+  CH -->|"Voltar"| BK
+  CH -->|"2. showChapter(abbrev, N)"| BJ["fetch('bible/' + abbrev + '.json')"]
+  BJ --> DOM["Renderiza #chapter-text (h2 + p sup)"]
+```
+
+<a id="como-rodar"></a>
 ## Como rodar
 
-O app usa `fetch` para ler os JSON, então precisa de um servidor estático (abrir o `index.html` direto via `file://` não funciona):
+> [!WARNING]
+> **Não abra `index.html` via `file://`.** Navegadores modernos bloqueiam chamadas `fetch("bible/structure.json")` em origem `file://` por política CORS[^2]. Sirva a pasta com qualquer servidor estático HTTP:
 
 ```bash
-gh repo clone voaneves/bible-app
+git clone https://github.com/voaneves/bible-app.git
 cd bible-app
 python -m http.server 8000
 ```
 
-Acesse http://localhost:8000.
+Acesse `http://localhost:8000`.
 
+<a id="estrutura"></a>
 ## Estrutura
 
+| Arquivo | Função |
+| :--- | :--- |
+| [`index.html`](./index.html) | Estrutura da página e contêineres de navegação/leitura |
+| [`script.js`](./script.js) | Geração dinâmica de botões e carga sob demanda via `fetch` |
+| [`styles.css`](./styles.css) | Grade responsiva de botões e tipografia dos versículos (`<sup>`) |
+| `bible/` | `structure.json` e um arquivo `<abbrev>.json` por livro (`chapter > verses`) |
+
+```json
+{
+  "book": "Genesis",
+  "chapters": [
+    {
+      "chapter": "1",
+      "verses": [
+        { "verse": "1", "text": "In the beginning God created the heaven and the earth." }
+      ]
+    }
+  ]
+}
 ```
-index.html   página
-script.js    botões de livros e capítulos, e exibição dos versículos
-styles.css   estilos
-bible/       structure.json (livros e nº de capítulos) e um JSON por livro
-LICENSE
-```
 
-Cada JSON de livro segue o formato `livro > capítulos > versículos` (`verse`, `text`); os textos em `bible/` estão em inglês.
-
-## Stack e aprendizados
-
-HTML5, CSS3, JavaScript (DOM, `fetch`, geração dinâmica de elementos) e dados em JSON.
-
+<a id="contato"></a>
 ## Contato
 
 <p>
@@ -93,6 +130,9 @@ HTML5, CSS3, JavaScript (DOM, `fetch`, geração dinâmica de elementos) e dados
   <img alt="VOANEVES mark" src="https://raw.githubusercontent.com/voaneves/bible-app/main/assets/brand/mark-duo.svg" width="32" height="32" />
 </p>
 
-<p align="center"><sub>Licenciado sob a <a href="https://github.com/voaneves/bible-app/blob/main/LICENSE">Licença MIT</a>.</sub></p>
+<p align="center"><sub>Licenciado sob a <a href="https://github.com/voaneves/bible-app/blob/main/LICENSE">Licença MIT</a> © 2026 <a href="https://github.com/voaneves">Victor Neves</a> · <strong>VOANEVES.</strong></sub></p>
 
 <p align="center"><sub><a href="#top">↑ Voltar ao topo</a></sub></p>
+
+[^1]: [`bible/structure.json`](./bible/structure.json) registra `book`, `abbrev`, total de capítulos e total de versículos de cada livro.
+[^2]: O uso de `http://localhost` ou hospedagem estática (como GitHub Pages) libera a leitura local dos JSONs pela Fetch API.
